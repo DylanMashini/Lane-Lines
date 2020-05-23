@@ -1,3 +1,14 @@
 import Lane_Lines as laneline
-lines = laneline.video("/Users/dylanmashini/PycharmProjects/Self Driving/video.mp4",False, True)
-print(lines[5])
+import tensorflow as tf
+
+
+
+def get_lines():
+    lines = laneline.video("/Users/dylanmashini/PycharmProjects/Self Driving/video.mp4", True, True)
+    return  lines
+
+get_lines()
+
+
+
+

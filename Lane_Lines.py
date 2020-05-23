@@ -1,10 +1,9 @@
 import cv2
 import numpy as np
-from matplotlib import pyplot as plt
-import pickle as pkl
 
 
-All_All_lines = []
+
+Final_Lines = []
 def draw_lane_lines2(image):
 
 
@@ -39,7 +38,7 @@ def draw_lane_lines2(image):
     # Combine lines image with original image
     left_line, right_line = lane_lines(image=image, lines=hough_transform_lines)
     all_lines = (left_line, right_line)
-    All_All_lines.append(all_lines)
+    Final_Lines.append(all_lines)
     final_pic = draw_lane_lines(image=image, lines=all_lines)
 
 
@@ -57,11 +56,7 @@ def canny(image):
 
     return edge
 def region_selection(image):
-    """
-    Determine and cut the region of interest in the input image.
-        Parameters:
-            image: An np.array compatible with plt.imshow.
-    """
+
     mask = np.zeros_like(image)
     #Defining a 3 channel or 1 channel color to fill the mask with depending on the input image
     if len(image.shape) > 2:
@@ -91,14 +86,7 @@ def HoughLines(image):
     return cv2.HoughLinesP(image, rho = rho, theta = theta, threshold = threshold,
                            minLineLength = minLineLength, maxLineGap = maxLineGap)
 def draw_lines(image, lines, color = [255, 0, 0], thickness = 2):
-    """
-    Draw lines onto the input image.
-        Parameters:
-            image: An np.array compatible with plt.imshow.
-            lines: The lines we want to draw.
-            color (Default = red): Line color.
-            thickness (Default = 2): Line thickness.
-    """
+
     image = np.copy(image)
     for line in lines:
         for x1, y1, x2, y2 in line:
@@ -110,11 +98,7 @@ def draw_lines(image, lines, color = [255, 0, 0], thickness = 2):
 
 
 def average_slope_intercept(lines):
-    """
-    Find the slope and intercept of the left and right lanes of each image.
-        Parameters:
-            lines: The output lines from Hough Transform.
-    """
+
     left_lines = []  # (slope, intercept)
     left_weights = []  # (length,)
     right_lines = []  # (slope, intercept)
@@ -138,13 +122,7 @@ def average_slope_intercept(lines):
     return left_lane, right_lane
 
 def pixel_points(y1, y2, line):
-    """
-    Converts the slope and intercept of each line into pixel points.
-        Parameters:
-            y1: y-value of the line's starting point.
-            y2: y-value of the line's end point.
-            line: The slope and intercept of the line.
-    """
+
     if line is None:
         return None
     slope, intercept = line
@@ -155,12 +133,7 @@ def pixel_points(y1, y2, line):
     return ((x1, y1), (x2, y2))
 
 def lane_lines(image, lines):
-    """
-    Create full lenght lines from pixel points.
-        Parameters:
-            image: The input test image.
-            lines: The output lines from Hough Transform.
-    """
+
     left_lane, right_lane = average_slope_intercept(lines)
     y1 = image.shape[0]
     y2 = y1 * 0.6
@@ -169,14 +142,7 @@ def lane_lines(image, lines):
     return left_line, right_line
 
 def draw_lane_lines(image, lines, color=[255, 0, 0], thickness=12):
-    """
-    Draw lines onto the input image.
-        Parameters:
-            image: The input test image.
-            lines: The output lines from Hough Transform.
-            color (Default = red): Line color.
-            thickness (Default = 12): Line thickness.
-    """
+
     line_image = np.zeros_like(image)
     for line in lines:
         if line is not None:
@@ -185,18 +151,17 @@ def draw_lane_lines(image, lines, color=[255, 0, 0], thickness=12):
 #Start of the video processing code
 
 def video(path, save_video, output_lines):
+
     imgs = []
     final_imgs = []
 
     vidcap = cv2.VideoCapture(path)
     fps = int(vidcap.get(5))
-    print(fps)
-
     success = True
     while success:
+
         success, image = vidcap.read()
         imgs.append(image)
-    print(len(imgs))
 
     for img in imgs:
         final_img = draw_lane_lines2(img)
@@ -214,24 +179,33 @@ def video(path, save_video, output_lines):
         height = int(height)
         width = int(width)
 
-        video = cv2.VideoWriter(video_name, fourcc, fps, (width, height))
+        video = cv2.VideoWriter(video_name, fourcc, 3, (width, height))
         for i in range(1, len(final_image_array)):
             if final_image_array[i] is None:
                 return
             #Final Frame img
             imggggg = final_image_array[i]
 
-        video.write(imggggg)
+            video.write(imggggg)
         cv2.destroyAllWindows()
         video.release()
     if output_lines:
-        return All_All_lines
+        return Final_Lines
 
 
 
 
 
+def photo(img, save_photo, output_lines):
 
+    if isinstance(img, str):
+        #Path to image was passed in
+        img = cv2.imread(img)
+    photo = draw_lane_lines2(img)
+    if save_photo:
+        cv2.imwrite("Photo.jpg", photo)
+    if output_lines:
+        return Final_Lines[0]
     # video = cv2.VideoWriter('video2.avi', -1, 1, (width, height))
     # for j in range(0, 5):
     #     video.write(final_imgs[j])
