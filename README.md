@@ -13,13 +13,13 @@ Step 1:
   
 Step 2:
 
-  Blurr the image using the Gaussian Blur fourmula.
+  Blurr the image using the [Gaussian Blur algorithm](https://docs.opencv.org/2.4/modules/imgproc/doc/filtering.html?highlight=gaussianblur#gaussianblur).
   
   We do this to reduce noise in the photo
   
 Step 3:
 
-  Detect the edges using canny edge detection
+  Detect the edges using [canny edge detection](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_canny/py_canny.html)
   
   This works by looking at areas with a big difference in color between them
   
@@ -35,9 +35,9 @@ Step 5:
   
 Step 6:
 
-  Combine the Mathamatical repersentations of the lines with the original photo
+  Overlay the Mathamatical repersentations of the lines over the original photo
   
-  You could skip this step, and use the mathamatical repersnetation of teh data elsewhere (ex. nural network for steering)
+  You could skip this step, and use the mathamatical repersnetation of the data elsewhere (ex. nural network for steering)
 
   
   
