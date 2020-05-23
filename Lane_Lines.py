@@ -3,17 +3,17 @@ import numpy as np
 
 
 
-Final_Lines = []
+Final_Line_Array = []
 def draw_lane_lines2(image):
 
 
     # Greyscale image
     if image is None:
-
+        print("image = none")
         return
 
     greyscaled_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    imshape = greyscaled_image.shape
+
 
     # Gaussian Blur
     blurred_grey_image = gaussian_blur(greyscaled_image)
@@ -23,22 +23,15 @@ def draw_lane_lines2(image):
     edges_image = canny(blurred_grey_image)
 
     # Mask edges image
-    border = 0
-    vertices = np.array([[(0, imshape[0]), (465, 320), (475, 320),
-                          (imshape[1], imshape[0])]], dtype=np.int32)
     edges_image_with_mask = region_selection(edges_image)
     # Hough lines
 
-
-
     hough_transform_lines = HoughLines(edges_image_with_mask)
-
-
 
     # Combine lines image with original image
     left_line, right_line = lane_lines(image=image, lines=hough_transform_lines)
     all_lines = (left_line, right_line)
-    Final_Lines.append(all_lines)
+    Final_Line_Array.append(all_lines)
     final_pic = draw_lane_lines(image=image, lines=all_lines)
 
 
@@ -53,8 +46,9 @@ def gaussian_blur(image):
     return blur
 def canny(image):
     edge = cv2.Canny(image,50,150)
-
     return edge
+
+
 def region_selection(image):
 
     mask = np.zeros_like(image)
@@ -152,7 +146,7 @@ def draw_lane_lines(image, lines, color=[255, 0, 0], thickness=12):
 
 def video(path, save_video, output_lines):
 
-    imgs = []
+    img_array = []
     final_imgs = []
 
     vidcap = cv2.VideoCapture(path)
@@ -161,9 +155,9 @@ def video(path, save_video, output_lines):
     while success:
 
         success, image = vidcap.read()
-        imgs.append(image)
+        img_array.append(image)
 
-    for img in imgs:
+    for img in img_array:
         final_img = draw_lane_lines2(img)
 
         final_imgs.append(final_img)
@@ -179,7 +173,7 @@ def video(path, save_video, output_lines):
         height = int(height)
         width = int(width)
 
-        video = cv2.VideoWriter(video_name, fourcc, 3, (width, height))
+        video = cv2.VideoWriter(video_name, fourcc, fps, (width, height))
         for i in range(1, len(final_image_array)):
             if final_image_array[i] is None:
                 return
@@ -190,7 +184,7 @@ def video(path, save_video, output_lines):
         cv2.destroyAllWindows()
         video.release()
     if output_lines:
-        return Final_Lines
+        return Final_Line_Array
 
 
 
@@ -205,13 +199,7 @@ def photo(img, save_photo, output_lines):
     if save_photo:
         cv2.imwrite("Photo.jpg", photo)
     if output_lines:
-        return Final_Lines[0]
-    # video = cv2.VideoWriter('video2.avi', -1, 1, (width, height))
-    # for j in range(0, 5):
-    #     video.write(final_imgs[j])
-    #     print("Testtttttt")
-    # cv2.destroyAllWindows()
-    # video.release()
+        return Final_Line_Array[0]
 
 
 
