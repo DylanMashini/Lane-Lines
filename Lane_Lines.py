@@ -184,9 +184,10 @@ def draw_lane_lines(image, lines, color=[255, 0, 0], thickness=12):
     return cv2.addWeighted(image, 1.0, line_image, 1.0, 0.0)
 #Start of the video processing code
 
-def video(path):
+def video(path, save_video, output_lines):
     imgs = []
     final_imgs = []
+
     vidcap = cv2.VideoCapture(path)
     fps = int(vidcap.get(5))
     print(fps)
@@ -199,33 +200,38 @@ def video(path):
 
     for img in imgs:
         final_img = draw_lane_lines2(img)
+
         final_imgs.append(final_img)
+
     # height, width, layers = final_imgs[1].shape
-    video_name = "Output_Video.avi"
-    fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
-    final_image_array = np.asarray(final_imgs)
-    height, width, layers = final_image_array[1].shape
-    height = int(height)
-    width = int(width)
 
 
-    video = cv2.VideoWriter(video_name, fourcc, fps, (width, height))
+    if save_video:
+        video_name = "Output_Video.avi"
+        fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
+        final_image_array = np.asarray(final_imgs)
+        height, width, layers = final_image_array[1].shape
+        height = int(height)
+        width = int(width)
 
-
-    for i in range(1, len(final_image_array)):
-        if final_image_array[i] is None:
-            return
-        #Final Frame img
-        imggggg = final_image_array[i]
+        video = cv2.VideoWriter(video_name, fourcc, fps, (width, height))
+        for i in range(1, len(final_image_array)):
+            if final_image_array[i] is None:
+                return
+            #Final Frame img
+            imggggg = final_image_array[i]
 
         video.write(imggggg)
+        cv2.destroyAllWindows()
+        video.release()
+    if output_lines:
+        return All_All_lines
 
 
 
 
 
-    cv2.destroyAllWindows()
-    video.release()
+
     # video = cv2.VideoWriter('video2.avi', -1, 1, (width, height))
     # for j in range(0, 5):
     #     video.write(final_imgs[j])
@@ -238,7 +244,6 @@ def video(path):
 
 
 
-video("/Users/dylanmashini/PycharmProjects/Self Driving/video.mp4")
 
 
 
