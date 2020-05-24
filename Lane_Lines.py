@@ -4,6 +4,7 @@ import numpy as np
 
 
 Final_Line_Array = []
+
 def draw_lane_lines2(image):
 
 
@@ -162,7 +163,12 @@ def video(path, save_video, output_lines):
 
         final_imgs.append(final_img)
 
-    # height, width, layers = final_imgs[1].shape
+
+
+    if output_lines:
+        #returns all of the line objects in a list
+        return Final_Line_Array
+
 
 
     if save_video:
@@ -170,6 +176,7 @@ def video(path, save_video, output_lines):
         fourcc = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
         final_image_array = np.asarray(final_imgs)
         height, width, layers = final_image_array[1].shape
+        print(height, width)
         height = int(height)
         width = int(width)
 
@@ -183,8 +190,7 @@ def video(path, save_video, output_lines):
             video.write(imggggg)
         cv2.destroyAllWindows()
         video.release()
-    if output_lines:
-        return Final_Line_Array
+
 
 
 
