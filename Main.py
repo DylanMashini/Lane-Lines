@@ -22,7 +22,7 @@ fake_y = []
 for i in range(0, 218):
     fake_y.append(0.05)
 
-
+fake_y = np.asarray(fake_y)
 for j in range(0, len(lines)):
     print(j)
     line = lines[j].astype("float64")
@@ -52,7 +52,7 @@ def build_model():
     model.add(tf.keras.layers.Dense(1, activation="elu"))
 
 
-    model.compile(optimizer = "adam", loss = "sparse_categorical_crossentropy", metrics = "accuracy")
+    model.compile(optimizer = "adam", loss = "sparse_categorical_crossentropy", metrics = ["accuracy"])
 
     model.fit(new_lines, fake_y)
     model.summary()
