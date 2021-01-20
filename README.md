@@ -31,13 +31,16 @@ Step 5:
 
   [Hough transform fourmula](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_imgproc/py_houghlines/py_houghlines.html)
   
-  This detects a shape in a picture. It can detect any shape that you can repersent mathamaticly
+  This detects a line in a picture. It can detect lines, and returns a mathamtical repersentation of said line. One drawback of using this function is that it can't return curved lines. 
   
 Step 6:
 
   Overlay the Mathamatical repersentations of the lines over the original photo
   
   You could skip this step, and use the mathamatical repersnetation of the data elsewhere (ex. nural network for steering)
+  
+  
+  Thanks for reading this was just a project for fun, and if you have any recomendations on how to make it better than email me at dylanmashini123@gmail.com
 
   
   
