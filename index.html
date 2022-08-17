@@ -4,20 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lane Line Tracker</title>
-    <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
-    <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
-    <py-env>
-      - opencv-python
-      - numpy
-      - paths:
-        - ./Main.py
-    </py-env>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.21.0/full/pyodide.js"></script>
   </head>
   <body>
-    <py-script>
-      import get_lines from Main
+    <script>
+      async function main() {
+        const pyodide = await loadPyodide();
+        await pyodide.loadPackage("opencv-python");
+        let zipResponse = await fetch("/package.zip");
+        let zipBinary = await zipResponse.arrayBuffer();
+        pyodide.unpackArchive(zipBinary, "zip");
+        console.log(zipResponse);
+        pyodide.runPython(`
+          import cv2
+          import Main
 
-      get_lines()
-    </py-script>
+          print("Hello, world!")
+        `);
+        let file = pyodide.FS.readFile("Output_Video.mp4", { encoding: "binary" });
+        console.log(file)
+        document.body.innerHTML = `<video id='video' autoplay>
+            <source src=${"data:video/mp4;base64,"+file.toString("base64")} type='video/mp4'>
+          </video>`;
+      }
+      main();
+    </script>
   </body>
 </html>
